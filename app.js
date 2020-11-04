@@ -62,31 +62,30 @@ app.get('/stock/api/v1.0/historical/:ticker', (req, res) => {
     if (!utils.isValidTicker(req.params.ticker)) {
         res.status(404).send({ 'error': 'invalid ticker' })
     } else {
-        if (!('startDate' in req.query)) {
-            res.status(404).send({ 'error': 'expected startDate query parameter' })
+        if (!('startDate' in req.query) || !('resampleFreq' in req.query)) {
+            res.status(404).send({ 'error': 'expected startDate and resampleFreq query parameter' })
+        } else {
+            const params = {
+                'startDate': req.query.startDate,
+                'resampleFreq': req.query.resampleFreq,
+                'token': apiTiingoToken
+            }
+            fetch('https://api.tiingo.com/tiingo/daily/' + req.params.ticker + '/prices' + '?' + new URLSearchParams(params))
+                .then(apiRes => {
+                    if (apiRes.status === 200) {
+                        return apiRes.json()
+                    } else {
+                        let reasonText = 'GET request for ' + req.params.ticker + ' failed. Reason: ' + apiRes.statusText
+                        throw { 'status': apiRes.status, 'reason': reasonText }
+                    }
+                })
+                .then(apiJson => parser.parseStockInfo(apiJson))
+                .then(parsedRes => res.send(parsedRes))
+                .catch(err => {
+                    res.status(err.status).send({ 'error': err.reason })
+                })
         }
-        if (!('resampleFreq' in req.query)) {
-            res.status(404).send({ 'error': 'expected resampleFreq query parameter' })
-        }
-        const params = {
-            'startDate': req.query.startDate,
-            'resampleFreq': req.query.resampleFreq,
-            'token': apiTiingoToken
-        }
-        fetch('https://api.tiingo.com/tiingo/daily/' + req.params.ticker + '/prices' + '?' + new URLSearchParams(params))
-            .then(apiRes => {
-                if (apiRes.status === 200) {
-                    return apiRes.json()
-                } else {
-                    let reasonText = 'GET request for ' + req.params.ticker + ' failed. Reason: ' + apiRes.statusText
-                    throw { 'status': apiRes.status, 'reason': reasonText }
-                }
-            })
-            .then(apiJson => parser.parseStockInfo(apiJson))
-            .then(parsedRes => res.send(parsedRes))
-            .catch(err => {
-                res.status(err.status).send({ 'error': err.reason })
-            })
+
     }
 });
 
@@ -95,56 +94,55 @@ app.get('/stock/api/v1.0/daily/:ticker', (req, res) => {
     if (!utils.isValidTicker(req.params.ticker)) {
         res.status(404).send({ 'error': 'invalid ticker' })
     } else {
-        if (!('startDate' in req.query)) {
-            res.status(404).send({ 'error': 'expected startDate query parameter' })
+        if (!('startDate' in req.query) || !('resampleFreq' in req.query)) {
+            res.status(404).send({ 'error': 'expected startDate and resampleFreq query parameter' })
+        } else {
+            const params = {
+                'startDate': req.query.startDate,
+                'resampleFreq': req.query.resampleFreq,
+                'token': apiTiingoToken
+            }
+            fetch('https://api.tiingo.com/iex/' + req.params.ticker + '/prices' + '?' + new URLSearchParams(params))
+                .then(apiRes => {
+                    if (apiRes.status === 200) {
+                        return apiRes.json()
+                    } else {
+                        let reasonText = 'GET request for ' + req.params.ticker + ' failed. Reason: ' + apiRes.statusText
+                        throw { 'status': apiRes.status, 'reason': reasonText }
+                    }
+                })
+                .then(apiJson => parser.parseStockInfo(apiJson))
+                .then(parsedRes => res.send(parsedRes))
+                .catch(err => {
+                    res.status(err.status).send({ 'error': err.reason })
+                })
         }
-        if (!('resampleFreq' in req.query)) {
-            res.status(404).send({ 'error': 'expected resampleFreq query parameter' })
-        }
-        const params = {
-            'startDate': req.query.startDate,
-            'resampleFreq': req.query.resampleFreq,
-            'token': apiTiingoToken
-        }
-        fetch('https://api.tiingo.com/iex/' + req.params.ticker + '/prices' + '?' + new URLSearchParams(params))
-            .then(apiRes => {
-                if (apiRes.status === 200) {
-                    return apiRes.json()
-                } else {
-                    let reasonText = 'GET request for ' + req.params.ticker + ' failed. Reason: ' + apiRes.statusText
-                    throw { 'status': apiRes.status, 'reason': reasonText }
-                }
-            })
-            .then(apiJson => parser.parseStockInfo(apiJson))
-            .then(parsedRes => res.send(parsedRes))
-            .catch(err => {
-                res.status(err.status).send({ 'error': err.reason })
-            })
     }
 });
 
 app.get('/stock/api/v1.0/search', (req, res) => {
     if (!('query' in req.query)) {
         res.status(404).send({ 'error': 'expected "query" query parameter' })
+    } else {
+        const params = {
+            'query': req.query.query,
+            'token': apiTiingoToken
+        }
+        fetch('https://api.tiingo.com/tiingo/utilities/search' + '?' + new URLSearchParams(params))
+            .then(apiRes => {
+                if (apiRes.status === 200) {
+                    return apiRes.json()
+                } else {
+                    let reasonText = 'GET request for query: ' + req.query.query + ' failed. Reason: ' + apiRes.statusText
+                    throw { 'status': apiRes.status, 'reason': reasonText }
+                }
+            })
+            .then(apiJson => parser.parseSearch(apiJson))
+            .then(parsedRes => res.send(parsedRes))
+            .catch(err => {
+                res.status(err.status).send({ 'error': err.reason })
+            })
     }
-    const params = {
-        'query': req.query.query,
-        'token': apiTiingoToken
-    }
-    fetch('https://api.tiingo.com/tiingo/utilities/search' + '?' + new URLSearchParams(params))
-        .then(apiRes => {
-            if (apiRes.status === 200) {
-                return apiRes.json()
-            } else {
-                let reasonText = 'GET request for query: ' + req.query.query + ' failed. Reason: ' + apiRes.statusText
-                throw { 'status': apiRes.status, 'reason': reasonText }
-            }
-        })
-        .then(apiJson => parser.parseSearch(apiJson))
-        .then(parsedRes => res.send(parsedRes))
-        .catch(err => {
-            res.status(err.status).send({ 'error': err.reason })
-        })
 });
 
 app.get('/stock/api/v1.0/news/:ticker', (req, res) => {
