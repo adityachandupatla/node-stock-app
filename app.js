@@ -14,64 +14,59 @@ app.get('/', (req, res) => {
 app.get('/stock/api/v1.0/outlook/:ticker', (req, res) => {
     res.setHeader('Content-Type', 'application/json')
     if (!utils.isValidTicker(req.params.ticker)) {
-        res.status(404).send({'error': 'invalid ticker'})
-    }
-    else {
-        const params = {'token': apiTiingoToken}
+        res.status(404).send({ 'error': 'invalid ticker' })
+    } else {
+        const params = { 'token': apiTiingoToken }
         fetch('https://api.tiingo.com/tiingo/daily/' + req.params.ticker + '?' + new URLSearchParams(params))
-        .then(apiRes => {
-            if (apiRes.status === 200) {
-                return apiRes.json()
-            }
-            else {
-                let reasonText = 'GET request for ' + req.params.ticker + ' failed. Reason: ' + apiRes.statusText
-                throw {'status': apiRes.status, 'reason': reasonText}
-            }
-        })
-        .then(apiJson => parser.parseCompanyOutlook(apiJson))
-        .then(parsedRes => res.send(parsedRes))
-        .catch(err => {
-            res.status(err.status).send({'error': err.reason})
-        })
+            .then(apiRes => {
+                if (apiRes.status === 200) {
+                    return apiRes.json()
+                } else {
+                    let reasonText = 'GET request for ' + req.params.ticker + ' failed. Reason: ' + apiRes.statusText
+                    throw { 'status': apiRes.status, 'reason': reasonText }
+                }
+            })
+            .then(apiJson => parser.parseCompanyOutlook(apiJson))
+            .then(parsedRes => res.send(parsedRes))
+            .catch(err => {
+                res.status(err.status).send({ 'error': err.reason })
+            })
     }
 });
 
 app.get('/stock/api/v1.0/summary/:ticker', (req, res) => {
     res.setHeader('Content-Type', 'application/json')
     if (!utils.isValidTicker(req.params.ticker)) {
-        res.status(404).send({'error': 'invalid ticker'})
-    }
-    else {
-        const params = {'token': apiTiingoToken}
+        res.status(404).send({ 'error': 'invalid ticker' })
+    } else {
+        const params = { 'token': apiTiingoToken }
         fetch('https://api.tiingo.com/iex/' + req.params.ticker + '?' + new URLSearchParams(params))
-        .then(apiRes => {
-            if (apiRes.status === 200) {
-                return apiRes.json()
-            }
-            else {
-                let reasonText = 'GET request for ' + req.params.ticker + ' failed. Reason: ' + apiRes.statusText
-                throw {'status': apiRes.status, 'reason': reasonText}
-            }
-        })
-        .then(apiJson => parser.parseStockSummary(apiJson[0]))
-        .then(parsedRes => res.send(parsedRes))
-        .catch(err => {
-            res.status(err.status).send({'error': err.reason})
-        })
+            .then(apiRes => {
+                if (apiRes.status === 200) {
+                    return apiRes.json()
+                } else {
+                    let reasonText = 'GET request for ' + req.params.ticker + ' failed. Reason: ' + apiRes.statusText
+                    throw { 'status': apiRes.status, 'reason': reasonText }
+                }
+            })
+            .then(apiJson => parser.parseStockSummary(apiJson[0]))
+            .then(parsedRes => res.send(parsedRes))
+            .catch(err => {
+                res.status(err.status).send({ 'error': err.reason })
+            })
     }
 });
 
 app.get('/stock/api/v1.0/historical/:ticker', (req, res) => {
     res.setHeader('Content-Type', 'application/json')
     if (!utils.isValidTicker(req.params.ticker)) {
-        res.status(404).send({'error': 'invalid ticker'})
-    }
-    else {
+        res.status(404).send({ 'error': 'invalid ticker' })
+    } else {
         if (!('startDate' in req.query)) {
-            res.status(404).send({'error': 'expected startDate query parameter'})
+            res.status(404).send({ 'error': 'expected startDate query parameter' })
         }
         if (!('resampleFreq' in req.query)) {
-            res.status(404).send({'error': 'expected resampleFreq query parameter'})
+            res.status(404).send({ 'error': 'expected resampleFreq query parameter' })
         }
         const params = {
             'startDate': req.query.startDate,
@@ -79,34 +74,32 @@ app.get('/stock/api/v1.0/historical/:ticker', (req, res) => {
             'token': apiTiingoToken
         }
         fetch('https://api.tiingo.com/tiingo/daily/' + req.params.ticker + '/prices' + '?' + new URLSearchParams(params))
-        .then(apiRes => {
-            if (apiRes.status === 200) {
-                return apiRes.json()
-            }
-            else {
-                let reasonText = 'GET request for ' + req.params.ticker + ' failed. Reason: ' + apiRes.statusText
-                throw {'status': apiRes.status, 'reason': reasonText}
-            }
-        })
-        .then(apiJson => parser.parseStockInfo(apiJson))
-        .then(parsedRes => res.send(parsedRes))
-        .catch(err => {
-            res.status(err.status).send({'error': err.reason})
-        })
+            .then(apiRes => {
+                if (apiRes.status === 200) {
+                    return apiRes.json()
+                } else {
+                    let reasonText = 'GET request for ' + req.params.ticker + ' failed. Reason: ' + apiRes.statusText
+                    throw { 'status': apiRes.status, 'reason': reasonText }
+                }
+            })
+            .then(apiJson => parser.parseStockInfo(apiJson))
+            .then(parsedRes => res.send(parsedRes))
+            .catch(err => {
+                res.status(err.status).send({ 'error': err.reason })
+            })
     }
 });
 
 app.get('/stock/api/v1.0/daily/:ticker', (req, res) => {
     res.setHeader('Content-Type', 'application/json')
     if (!utils.isValidTicker(req.params.ticker)) {
-        res.status(404).send({'error': 'invalid ticker'})
-    }
-    else {
+        res.status(404).send({ 'error': 'invalid ticker' })
+    } else {
         if (!('startDate' in req.query)) {
-            res.status(404).send({'error': 'expected startDate query parameter'})
+            res.status(404).send({ 'error': 'expected startDate query parameter' })
         }
         if (!('resampleFreq' in req.query)) {
-            res.status(404).send({'error': 'expected resampleFreq query parameter'})
+            res.status(404).send({ 'error': 'expected resampleFreq query parameter' })
         }
         const params = {
             'startDate': req.query.startDate,
@@ -114,70 +107,66 @@ app.get('/stock/api/v1.0/daily/:ticker', (req, res) => {
             'token': apiTiingoToken
         }
         fetch('https://api.tiingo.com/iex/' + req.params.ticker + '/prices' + '?' + new URLSearchParams(params))
-        .then(apiRes => {
-            if (apiRes.status === 200) {
-                return apiRes.json()
-            }
-            else {
-                let reasonText = 'GET request for ' + req.params.ticker + ' failed. Reason: ' + apiRes.statusText
-                throw {'status': apiRes.status, 'reason': reasonText}
-            }
-        })
-        .then(apiJson => parser.parseStockInfo(apiJson))
-        .then(parsedRes => res.send(parsedRes))
-        .catch(err => {
-            res.status(err.status).send({'error': err.reason})
-        })
+            .then(apiRes => {
+                if (apiRes.status === 200) {
+                    return apiRes.json()
+                } else {
+                    let reasonText = 'GET request for ' + req.params.ticker + ' failed. Reason: ' + apiRes.statusText
+                    throw { 'status': apiRes.status, 'reason': reasonText }
+                }
+            })
+            .then(apiJson => parser.parseStockInfo(apiJson))
+            .then(parsedRes => res.send(parsedRes))
+            .catch(err => {
+                res.status(err.status).send({ 'error': err.reason })
+            })
     }
 });
 
 app.get('/stock/api/v1.0/search', (req, res) => {
     if (!('query' in req.query)) {
-        res.status(404).send({'error': 'expected query query parameter'})
+        res.status(404).send({ 'error': 'expected "query" query parameter' })
     }
     const params = {
         'query': req.query.query,
         'token': apiTiingoToken
     }
     fetch('https://api.tiingo.com/tiingo/utilities/search' + '?' + new URLSearchParams(params))
-    .then(apiRes => {
-        if (apiRes.status === 200) {
-            return apiRes.json()
-        }
-        else {
-            let reasonText = 'GET request for query: ' + req.query.query + ' failed. Reason: ' + apiRes.statusText
-            throw {'status': apiRes.status, 'reason': reasonText}
-        }
-    })
-    .then(apiJson => parser.parseSearch(apiJson))
-    .then(parsedRes => res.send(parsedRes))
-    .catch(err => {
-        res.status(err.status).send({'error': err.reason})
-    })
+        .then(apiRes => {
+            if (apiRes.status === 200) {
+                return apiRes.json()
+            } else {
+                let reasonText = 'GET request for query: ' + req.query.query + ' failed. Reason: ' + apiRes.statusText
+                throw { 'status': apiRes.status, 'reason': reasonText }
+            }
+        })
+        .then(apiJson => parser.parseSearch(apiJson))
+        .then(parsedRes => res.send(parsedRes))
+        .catch(err => {
+            res.status(err.status).send({ 'error': err.reason })
+        })
 });
 
 app.get('/stock/api/v1.0/news/:ticker', (req, res) => {
     res.setHeader('Content-Type', 'application/json')
     if (!utils.isValidTicker(req.params.ticker)) {
-        res.status(404).send({'error': 'invalid ticker'})
-    }
-    else {
-        const params = {'apiKey': newsApiToken, 'q': req.params.ticker}
+        res.status(404).send({ 'error': 'invalid ticker' })
+    } else {
+        const params = { 'apiKey': newsApiToken, 'q': req.params.ticker }
         fetch('https://newsapi.org/v2/everything?' + new URLSearchParams(params))
-        .then(apiRes => {
-            if (apiRes.status === 200) {
-                return apiRes.json()
-            }
-            else {
-                let reasonText = 'GET request for ' + req.params.ticker + ' failed. Reason: ' + apiRes.statusText
-                throw {'status': apiRes.status, 'reason': reasonText}
-            }
-        })
-        .then(apiJson => parser.parseNews(apiJson))
-        .then(parsedRes => res.send(parsedRes))
-        .catch(err => {
-            res.status(err.status).send({'error': err.reason})
-        })
+            .then(apiRes => {
+                if (apiRes.status === 200) {
+                    return apiRes.json()
+                } else {
+                    let reasonText = 'GET request for ' + req.params.ticker + ' failed. Reason: ' + apiRes.statusText
+                    throw { 'status': apiRes.status, 'reason': reasonText }
+                }
+            })
+            .then(apiJson => parser.parseNews(apiJson))
+            .then(parsedRes => res.send(parsedRes))
+            .catch(err => {
+                res.status(err.status).send({ 'error': err.reason })
+            })
     }
 });
 
