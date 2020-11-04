@@ -3,9 +3,12 @@ const fetch = require('node-fetch')
 const utils = require('./utils')
 const parser = require('./parser')
 const app = express();
+const cors = require('cors')
 
 const apiTiingoToken = utils.readSecret(".api_tiingo")
 const newsApiToken = utils.readSecret(".news_api")
+
+app.use(cors())
 
 app.get('/', (req, res) => {
     res.send('Hello Word')
