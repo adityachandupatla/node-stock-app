@@ -58,17 +58,9 @@ function copyNodeJSCodeTask() {
         .pipe(dest(`${paths.prod_build}`))
 }
 
-function zippingTask() {
-    log('zipping the code ')
-    return src(`${paths.prod_build}/**`)
-        .pipe(zip(`${paths.zipped_file_name}`))
-        .pipe(dest(`${paths.prod_build}`))
-}
-
 exports.default = series(
     clean,
     createProdBuildFolder,
     buildAngularCodeTask,
-    parallel(copyAngularCodeTask, copyNodeJSCodeTask),
-    zippingTask
+    parallel(copyAngularCodeTask, copyNodeJSCodeTask)
 );
