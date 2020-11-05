@@ -47,7 +47,7 @@ function copyAngularCodeTask() {
 
 function copyNodeJSCodeTask() {
     log('building and copying server code into the directory')
-    return src(['package.json', 'app.js', 'utils.js', 'parser.js'])
+    return src(['package.json', 'app.js', 'utils.js', 'parser.js', '.api_tiingo', '.news_api'])
         .pipe(dest(`${paths.prod_build}`))
 }
 
