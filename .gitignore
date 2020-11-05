@@ -106,3 +106,5 @@ dist
 # My own secrets
 .api_tiingo
 .news_api
+angular-stock-app
+prod-build
