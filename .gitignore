@@ -108,3 +108,4 @@ dist
 .news_api
 angular-stock-app
 prod-build
+.DS_Store
