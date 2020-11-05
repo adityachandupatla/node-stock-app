@@ -70,10 +70,12 @@ function parseSearch(serverResp) {
         requiredResponse['parsing'] = true
         requiredResponse['data'] = []
         for (let i = 0; i < serverResp.length; i++) {
-            suggestion = {}
-            suggestion['ticker'] = serverResp[i]['ticker'] || parseErrorMsg
-            suggestion['name'] = serverResp[i]['name'] || parseErrorMsg
-            requiredResponse['data'].push(suggestion)
+            if (serverResp[i]['ticker'] != null && serverResp[i]['name'] != null) {
+                suggestion = {}
+                suggestion['ticker'] = serverResp[i]['ticker']
+                suggestion['name'] = serverResp[i]['name']
+                requiredResponse['data'].push(suggestion)
+            }
         }
     } else {
         requiredResponse['parsing'] = false
