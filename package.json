@@ -1,6 +1,8 @@
 {
     "name": "node-stock-app",
     "version": "1.0.0",
+    "engines": { "node": "12.9.0" },
+    "engineStrict": true,
     "description": "Stock App using Node, Angular, and Bootstrap (on AWS)",
     "main": "index.js",
     "scripts": {
