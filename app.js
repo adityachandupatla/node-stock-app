@@ -7,8 +7,8 @@ const cors = require('cors')
 
 const port = 8080;
 
-const apiTiingoToken = utils.readSecret(".api_tiingo")
-const newsApiToken = utils.readSecret(".news_api")
+const apiTiingoToken = utils.readSecret("api_tiingo")
+const newsApiToken = utils.readSecret("news_api")
 
 app.use(express.static('angular-stock-app/dist/angular-stock-app'))
 
