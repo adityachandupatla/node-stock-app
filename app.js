@@ -8,10 +8,12 @@ const cors = require('cors')
 const apiTiingoToken = utils.readSecret(".api_tiingo")
 const newsApiToken = utils.readSecret(".news_api")
 
+app.use(express.static('angular-stock-app/dist/angular-stock-app'))
+
 app.use(cors())
 
 app.get('/', (req, res) => {
-    res.send('Hello Word')
+    res.sendFile(process.cwd() + "index.html")
 });
 
 app.get('/stock/api/v1.0/outlook/:ticker', (req, res) => {
