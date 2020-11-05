@@ -5,6 +5,8 @@ const parser = require('./parser')
 const app = express();
 const cors = require('cors')
 
+const port = 8080;
+
 const apiTiingoToken = utils.readSecret(".api_tiingo")
 const newsApiToken = utils.readSecret(".news_api")
 
@@ -173,4 +175,4 @@ app.get('/stock/api/v1.0/news/:ticker', (req, res) => {
     }
 });
 
-app.listen(3000, () => console.log('Listening on port 3000...'))
+app.listen(port, () => console.log(`Listening on port ${port}...`))
