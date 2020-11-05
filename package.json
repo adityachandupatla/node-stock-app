@@ -1,7 +1,9 @@
 {
     "name": "node-stock-app",
     "version": "1.0.0",
-    "engines": { "node": "12.9.0" },
+    "engines": {
+        "node": "12.9.0"
+    },
     "engineStrict": true,
     "description": "Stock App using Node, Angular, and Bootstrap (on AWS)",
     "main": "index.js",
@@ -26,6 +28,8 @@
         "express": "^4.17.1",
         "fancy-log": "^1.3.3",
         "gulp-zip": "^5.0.2",
+        "highcharts": "^8.2.2",
+        "highcharts-angular": "^2.8.2",
         "node-fetch": "^2.6.1"
     },
     "devDependencies": {
