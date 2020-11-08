@@ -69,12 +69,11 @@ app.get('/stock/api/v1.0/historical/:ticker', (req, res) => {
     if (!utils.isValidTicker(req.params.ticker)) {
         res.status(404).send({ 'error': 'invalid ticker' })
     } else {
-        if (!('startDate' in req.query) || !('resampleFreq' in req.query)) {
-            res.status(404).send({ 'error': 'expected startDate and resampleFreq query parameter' })
+        if (!('startDate' in req.query)) {
+            res.status(404).send({ 'error': 'expected startDate query parameter' })
         } else {
             const params = {
                 'startDate': req.query.startDate,
-                'resampleFreq': req.query.resampleFreq,
                 'token': apiTiingoToken
             }
             fetch('https://api.tiingo.com/tiingo/daily/' + req.params.ticker + '/prices' + '?' + new URLSearchParams(params))

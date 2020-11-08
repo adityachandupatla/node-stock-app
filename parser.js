@@ -28,7 +28,7 @@ function parseStockSummary(serverResp) {
         requiredResponse['openingPrice'] = serverResp['open'] || parseErrorMsg
         requiredResponse['highPrice'] = serverResp['high'] || parseErrorMsg
         requiredResponse['lowPrice'] = serverResp['low'] || parseErrorMsg
-        requiredResponse['numberOfSharesTraded'] = serverResp['volume'] || parseErrorMsg
+        requiredResponse['volume'] = serverResp['volume'] || parseErrorMsg
 
         // only available when market is available
         requiredResponse['bidSize'] = 'bidSize' in serverResp ? serverResp['bidSize'] : parseErrorMsg
@@ -50,7 +50,11 @@ function parseStockInfo(serverResp) {
         requiredResponse['data'] = []
         for (let i = 0; i < serverResp.length; i++) {
             historical_data = {}
-            historical_data['date'] = serverResp[i]['date'] || parseErrorMsg
+            if (serverResp[i]['date'] == null || serverResp[i]['date'] == undefined) {
+                continue;
+            } else {
+                historical_data['date'] = new Date(serverResp[i]['date']).getTime()
+            }
             historical_data['open'] = serverResp[i]['open'] || parseErrorMsg
             historical_data['high'] = serverResp[i]['high'] || parseErrorMsg
             historical_data['low'] = serverResp[i]['low'] || parseErrorMsg
@@ -83,13 +87,14 @@ function parseSearch(serverResp) {
     return requiredResponse
 }
 
-function parseNews(serverResp) {
+async function parseNews(serverResp) {
     const requiredResponse = {}
     if (typeof serverResp === 'object' && !Array.isArray(serverResp)) {
         requiredResponse['parsing'] = true
         requiredResponse['articles'] = []
         for (let i = 0; i < serverResp['articles'].length; i++) {
-            if (utils.isValidArticle(serverResp['articles'][i])) {
+            let successful = await utils.isValidArticle(serverResp['articles'][i])
+            if (successful) {
                 article = {}
                 article['title'] = serverResp['articles'][i]['title']
                 article['articleUrl'] = serverResp['articles'][i]['url']

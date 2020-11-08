@@ -1,4 +1,5 @@
 const fs = require('fs')
+const fetch = require('node-fetch')
 
 function readSecret(filename) {
     try {
@@ -16,9 +17,9 @@ function isValidTicker(ticker) {
     return (typeof ticker === 'string' && ticker.match(/^[a-z0-9]+$/i))
 }
 
-function isValidArticle(article) {
+async function isValidArticle(article) {
     keys = ['title', 'url', 'urlToImage', 'publishedAt', 'description']
-    for (let i = 0;i < keys.length;i++) {
+    for (let i = 0; i < keys.length; i++) {
         key = keys[i]
         if ((!(key in article)) || typeof article[key] !== 'string' || article[key] === '') {
             return false
@@ -32,7 +33,16 @@ function isValidArticle(article) {
     if ((!('name' in article['source'])) || typeof article['source']['name'] !== 'string' || article['source']['name'] === '') {
         return false
     }
-    return true
+
+    // check urls is valid
+    return await fetch(article['urlToImage'])
+        .then(apiRes => {
+            if (apiRes.status === 200) {
+                return true
+            } else {
+                return false
+            }
+        })
 }
 
 module.exports = {
